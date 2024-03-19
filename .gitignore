@@ -34,3 +34,4 @@
 # output directory
 bin/
 build/
+temp/
