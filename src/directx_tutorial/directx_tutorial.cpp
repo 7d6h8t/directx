@@ -1,6 +1,4 @@
-// directx_tutorial.cpp : Defines the entry point for the application.
-//
-
+#include "pch.h"
 #include "framework.h"
 #include "directx_tutorial.h"
 

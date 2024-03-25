@@ -11,6 +11,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="directx_tutorial.h" />
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="directx_tutorial.rc">
@@ -27,5 +28,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="directx_tutorial.cpp" />
+    <ClCompile Include="pch.cpp" />
   </ItemGroup>
 </Project>
