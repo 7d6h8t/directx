@@ -12,6 +12,9 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="directx_tutorial.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="types.h" />
+    <ClInclude Include="values.h" />
+    <ClInclude Include="struct.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="directx_tutorial.rc">
