@@ -19,3 +19,7 @@
 #include <d3dcompiler.h>
 #include <wrl.h>
 #include <DirectXMath.h>
+
+// using vcpkg
+#include <DirectXTex.h>
+#include <DirectXTex.inl>

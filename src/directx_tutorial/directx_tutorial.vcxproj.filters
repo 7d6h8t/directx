@@ -15,6 +15,7 @@
     <ClInclude Include="types.h" />
     <ClInclude Include="values.h" />
     <ClInclude Include="struct.h" />
+    <ClInclude Include="game.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="directx_tutorial.rc">
@@ -32,5 +33,6 @@
   <ItemGroup>
     <ClCompile Include="directx_tutorial.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="game.cpp" />
   </ItemGroup>
 </Project>
