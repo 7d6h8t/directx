@@ -20,6 +20,12 @@
 #include <wrl.h>
 #include <DirectXMath.h>
 
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dCompiler.lib")
+
 // using vcpkg
 #include <DirectXTex.h>
 #include <DirectXTex.inl>
+
+
+#define CHECK(p) assert(SUCCEEDED(p))
