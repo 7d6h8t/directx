@@ -33,5 +33,6 @@
 
 # output directory
 bin/
-build/
 temp/
+
+.vs/
