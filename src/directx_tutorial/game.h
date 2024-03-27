@@ -9,6 +9,16 @@ class Game {
   void Render();
 
  private:
+  void CreateGeometry();
+  void CreateInputLayout();
+
+  void CreateVS();
+  void CreatePS();
+
+  void LoadShaderFromFile(const std::wstring& path, const std::string& name,
+                          const std::string& version,
+                          Microsoft::WRL::ComPtr<ID3DBlob>& blob);
+
   void CreateDeviceAndSwapChain();
   void CreateRenderTargetView();
   void SetViewport();
@@ -30,4 +40,19 @@ class Game {
   // Misc
   D3D11_VIEWPORT viewport_ = {0};
   float clear_color[4] = {0.5f, 0.5f, 0.5f, 0.5f};
+
+  // Geometry
+  std::vector<Vertex> vertices_;
+  Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer_ = nullptr;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout> input_layout_ = nullptr;
+
+  // VS
+  Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader_ = nullptr;
+  Microsoft::WRL::ComPtr<ID3DBlob> vs_blob_ = nullptr;
+
+  // PS
+  Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader_ = nullptr;
+  Microsoft::WRL::ComPtr<ID3DBlob> ps_blob_ = nullptr;
+
+  // [CPU <-> RAM] [GPU <-> VRAM]
 };

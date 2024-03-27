@@ -13,6 +13,11 @@ void Game::Init(HWND hwnd) {
   CreateDeviceAndSwapChain();
   CreateRenderTargetView();
   SetViewport();
+
+  CreateGeometry();
+  CreateVS();
+  CreateInputLayout();
+  CreatePS();
 }
 
 void Game::Update() {}
@@ -20,12 +25,104 @@ void Game::Update() {}
 void Game::Render() {
   RenderBegin();
 
-  // TODO
+  // IA - VS - RS - PS - OM
   {
-    // IA - VS - RS - PS - OM
+    // IA
+    uint32_t stride = sizeof(Vertex);
+    uint32_t offset = 0;
+    device_context_->IASetVertexBuffers(0, 1, vertex_buffer_.GetAddressOf(),
+                                        &stride, &offset);
+    device_context_->IASetInputLayout(input_layout_.Get());
+    device_context_->IASetPrimitiveTopology(
+        D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    // VS
+    device_context_->VSSetShader(vertex_shader_.Get(), nullptr, 0);
+
+    // RS
+    // TODO
+
+    // PS
+    device_context_->PSSetShader(pixel_shader_.Get(), nullptr, 0);
+
+    // OM
+    // TODO
+
+    device_context_->Draw(static_cast<uint32_t>(vertices_.size()), 0);
   }
 
   RenderEnd();
+}
+
+void Game::CreateGeometry() {
+
+  // VertexData (CPU ram)
+  {
+    vertices_.resize(3);
+
+    vertices_[0].position = Vec3(-0.5f, -0.5f, 0.f);
+    vertices_[0].color = Color(1.f, 0.f, 0.f, 1.f);
+
+    vertices_[1].position = Vec3(0.f, 0.5f, 0.f);
+    vertices_[1].color = Color(0.f, 1.f, 0.f, 1.f);
+
+    vertices_[2].position = Vec3(0.5f, -0.5f, 0.f);
+    vertices_[2].color = Color(0.f, 0.f, 1.f, 1.f);
+  }
+
+  // VertexBuffer (cpu ram -> gpu vram)
+  {
+    D3D11_BUFFER_DESC desc{};
+    desc.Usage = D3D11_USAGE_IMMUTABLE;
+    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    desc.ByteWidth = static_cast<uint32_t>(sizeof(Vertex) * vertices_.size());
+
+    D3D11_SUBRESOURCE_DATA data{};
+    data.pSysMem = vertices_.data();
+
+    device_->CreateBuffer(&desc, &data, vertex_buffer_.GetAddressOf());
+  }
+}
+
+void Game::CreateInputLayout() {
+  D3D11_INPUT_ELEMENT_DESC layout[] = {
+      {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+       D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,
+       D3D11_INPUT_PER_VERTEX_DATA, 0},
+  };
+
+  const int32_t count = ARRAYSIZE(layout);
+  device_->CreateInputLayout(layout, count, vs_blob_->GetBufferPointer(),
+                             vs_blob_->GetBufferSize(),
+                             input_layout_.GetAddressOf());
+}
+
+void Game::CreateVS() {
+  LoadShaderFromFile(L"Shaders/Default.hlsl", "VS", "vs_5_0", vs_blob_);
+  HRESULT hr = device_->CreateVertexShader(vs_blob_->GetBufferPointer(),
+                                           vs_blob_->GetBufferSize(), nullptr,
+                                           vertex_shader_.GetAddressOf());
+  CHECK(hr);
+}
+
+void Game::CreatePS() {
+  LoadShaderFromFile(L"Shaders/Default.hlsl", "PS", "ps_5_0", ps_blob_);
+  HRESULT hr = device_->CreatePixelShader(ps_blob_->GetBufferPointer(),
+                                          ps_blob_->GetBufferSize(), nullptr,
+                                          pixel_shader_.GetAddressOf());
+  CHECK(hr);
+}
+
+void Game::LoadShaderFromFile(const std::wstring& path, const std::string& name,
+                              const std::string& version,
+                              Microsoft::WRL::ComPtr<ID3DBlob>& blob) {
+  const uint32_t compile_flag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+  HRESULT hr = ::D3DCompileFromFile(
+      path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, name.c_str(),
+      version.c_str(), compile_flag, 0, blob.GetAddressOf(), nullptr);
+
+  CHECK(hr);
 }
 
 void Game::CreateDeviceAndSwapChain() {
